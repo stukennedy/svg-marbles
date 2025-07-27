@@ -1,4 +1,4 @@
-import { ParsedMarbleDiagram } from "./marble-parser";
+import { ParsedMarbleDiagram } from './marble-parser';
 
 export interface SVGTheme {
   backgroundColor: string;
@@ -18,12 +18,12 @@ export interface SVGTheme {
 }
 
 export const defaultTheme: SVGTheme = {
-  backgroundColor: "#ffffff",
-  lineColor: "#333333",
-  valueColor: "#4CAF50",
-  errorColor: "#f44336",
-  completeColor: "#2196F3",
-  textColor: "#000000",
+  backgroundColor: '#ffffff',
+  lineColor: '#333333',
+  valueColor: '#4CAF50',
+  errorColor: '#f44336',
+  completeColor: '#2196F3',
+  textColor: '#000000',
   fontSize: 14,
   lineWidth: 2,
   circleRadius: 8,
@@ -37,13 +37,9 @@ export interface RenderOptions {
   name?: string;
 }
 
-export function renderMarbleDiagramToSVG(
-  diagram: ParsedMarbleDiagram,
-  options: RenderOptions = {}
-): string {
+export function renderMarbleDiagramToSVG(diagram: ParsedMarbleDiagram, options: RenderOptions = {}): string {
   const theme = { ...defaultTheme, ...options.theme };
-  const { padding, rowHeight, timeScale, lineWidth, circleRadius, fontSize } =
-    theme;
+  const { padding, rowHeight, timeScale, lineWidth, circleRadius, fontSize } = theme;
 
   const width = diagram.duration * timeScale + padding * 2;
   const height = rowHeight + padding * 2;
@@ -58,50 +54,38 @@ export function renderMarbleDiagramToSVG(
   svg += `<line x1="${startX}" y1="${y}" x2="${endX}" y2="${y}" stroke="${theme.lineColor}" stroke-width="${lineWidth}"/>`;
 
   if (options.name) {
-    svg += `<text x="${padding}" y="${
-      padding - 5
-    }" font-family="Arial, sans-serif" font-size="${fontSize}" fill="${
-      theme.textColor
-    }">${options.name}</text>`;
+    svg += `<text x="${padding}" y="${padding - 5}" font-family="Arial, sans-serif" font-size="${fontSize}" fill="${theme.textColor}">${options.name}</text>`;
   }
 
   diagram.events.forEach((event) => {
     const x = startX + event.time * timeScale;
 
     switch (event.type) {
-      case "next":
+      case 'next':
         const strokeColor = theme.circleStrokeColor || theme.lineColor;
         const strokeWidth = theme.circleStrokeWidth || lineWidth;
         svg += `<circle cx="${x}" cy="${y}" r="${circleRadius}" fill="${theme.valueColor}" stroke="${strokeColor}" stroke-width="${strokeWidth}" />`;
         if (event.value) {
-          svg += `<text x="${x}" y="${
-            y + 5
-          }" text-anchor="middle" font-family="Arial, sans-serif" font-size="${fontSize}" fill="${theme.textColor}">${event.value}</text>`;
+          svg += `<text x="${x}" y="${y + 5}" text-anchor="middle" font-family="Arial, sans-serif" font-size="${fontSize}" fill="${theme.textColor}">${event.value}</text>`;
         }
         break;
 
-      case "error":
-        svg += `<line x1="${x - circleRadius}" y1="${y - circleRadius}" x2="${
-          x + circleRadius
-        }" y2="${y + circleRadius}" stroke="${
-          theme.errorColor
-        }" stroke-width="${lineWidth * 1.5}"/>`;
-        svg += `<line x1="${x - circleRadius}" y1="${y + circleRadius}" x2="${
-          x + circleRadius
-        }" y2="${y - circleRadius}" stroke="${
-          theme.errorColor
-        }" stroke-width="${lineWidth * 1.5}"/>`;
+      case 'error':
+        svg += `<line x1="${x - circleRadius}" y1="${y - circleRadius}" x2="${x + circleRadius}" y2="${y + circleRadius}" stroke="${theme.errorColor}" stroke-width="${
+          lineWidth * 1.5
+        }"/>`;
+        svg += `<line x1="${x - circleRadius}" y1="${y + circleRadius}" x2="${x + circleRadius}" y2="${y - circleRadius}" stroke="${theme.errorColor}" stroke-width="${
+          lineWidth * 1.5
+        }"/>`;
         break;
 
-      case "complete":
-        svg += `<line x1="${x}" y1="${y - circleRadius * 1.5}" x2="${x}" y2="${
-          y + circleRadius * 1.5
-        }" stroke="${theme.completeColor}" stroke-width="${lineWidth * 2}"/>`;
+      case 'complete':
+        svg += `<line x1="${x}" y1="${y - circleRadius * 1.5}" x2="${x}" y2="${y + circleRadius * 1.5}" stroke="${theme.completeColor}" stroke-width="${lineWidth * 2}"/>`;
         break;
     }
   });
 
-  svg += "</svg>";
+  svg += '</svg>';
 
   return svg;
 }

@@ -20,15 +20,15 @@ export function parseMarbleDiagram(marble: string, frameTime: number = 10): Pars
       case '-':
         currentTime += frameTime;
         break;
-      
+
       case '|':
         events.push({ time: currentTime, type: 'complete' });
         break;
-      
+
       case '#':
         events.push({ time: currentTime, type: 'error' });
         break;
-      
+
       case '(':
         const closeIndex = marble.indexOf(')', i);
         if (closeIndex === -1) {
@@ -43,13 +43,13 @@ export function parseMarbleDiagram(marble: string, frameTime: number = 10): Pars
         i = closeIndex;
         currentTime += frameTime;
         break;
-      
+
       case ')':
         throw new Error('Unexpected closing parenthesis');
-      
+
       case ' ':
         break;
-      
+
       default:
         events.push({ time: currentTime, value: char, type: 'next' });
         currentTime += frameTime;

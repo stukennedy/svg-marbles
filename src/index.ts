@@ -1,5 +1,5 @@
-import { parseMarbleDiagram } from "./marble-parser";
-import { renderMarbleDiagramToSVG, SVGTheme } from "./svg-renderer";
+import { parseMarbleDiagram } from './marble-parser';
+import { renderMarbleDiagramToSVG, SVGTheme } from './svg-renderer';
 
 export interface MarbleDiagram {
   name?: string;
@@ -12,15 +12,12 @@ export interface MarbleToSVGOptions {
   frameTime?: number;
 }
 
-export function render(
-  diagram: string | MarbleDiagram,
-  options: MarbleToSVGOptions = {}
-): string {
+export function render(diagram: string | MarbleDiagram, options: MarbleToSVGOptions = {}): string {
   let marbleString: string;
   let name: string | undefined;
   let frameTime: number;
 
-  if (typeof diagram === "string") {
+  if (typeof diagram === 'string') {
     marbleString = diagram;
     frameTime = options.frameTime || 10;
   } else {
@@ -37,10 +34,6 @@ export function render(
   });
 }
 
-export {
-  parseMarbleDiagram,
-  ParsedMarbleDiagram,
-  MarbleEvent
-} from "./marble-parser";
-export { SVGTheme, defaultTheme } from "./svg-renderer";
-export { testWithCapture, captureMarbles } from "./capture-observable";
+export { parseMarbleDiagram, ParsedMarbleDiagram, MarbleEvent } from './marble-parser';
+export { SVGTheme, defaultTheme } from './svg-renderer';
+export { testWithCapture, captureMarbles } from './capture-observable';
