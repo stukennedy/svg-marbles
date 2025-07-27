@@ -37,10 +37,10 @@ export function render(
   });
 }
 
-
 export {
   parseMarbleDiagram,
   ParsedMarbleDiagram,
   MarbleEvent
 } from "./marble-parser";
 export { SVGTheme, defaultTheme } from "./svg-renderer";
+export { testWithCapture, captureMarbles } from "./capture-observable";

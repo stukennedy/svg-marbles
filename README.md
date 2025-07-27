@@ -295,6 +295,169 @@ const blueStream = render("--a--b--|", { theme: createTheme("#2196F3") });
 const greenStream = render("--a--b--|", { theme: createTheme("#4CAF50") });
 ```
 
+## Testing and Observable Capture
+
+The library provides utilities for capturing the actual marble output of RxJS observables during testing, which is useful for generating marble diagrams from real observable streams.
+
+### `testWithCapture(setup)`
+
+Captures the marble output of an observable within a TestScheduler environment.
+
+#### Parameters
+
+- `setup`: `(helpers: { cold: TestScheduler['createColdObservable'], hot: TestScheduler['createHotObservable'] }) => Observable<any>` - Function that creates and returns an observable using the provided test helpers
+
+#### Returns
+
+- `MarbleCapture` - Object containing the marble string and value mappings
+
+#### MarbleCapture
+
+```typescript
+interface MarbleCapture {
+  marble: string; // The marble diagram string
+  values: Record<string, any>; // Mapping of characters to actual values
+}
+```
+
+### `captureMarbles(scheduler, setup)`
+
+Lower-level function that captures marbles using a provided TestScheduler instance.
+
+#### Parameters
+
+- `scheduler`: `TestScheduler` - The test scheduler to use for capturing
+- `setup`: `(helpers: { cold: TestScheduler['createColdObservable'], hot: TestScheduler['createHotObservable'] }) => Observable<any>` - Function that creates and returns an observable
+
+#### Returns
+
+- `MarbleCapture` - Object containing the marble string and value mappings
+
+### Examples
+
+#### Basic Observable Capture
+
+```typescript
+import { testWithCapture } from "svg-marbles";
+import { of, map, delay } from "rxjs";
+
+// Capture a simple observable
+const result = testWithCapture(({ cold }) => {
+  return cold("--a--b--c--|", { a: 1, b: 2, c: 3 });
+});
+
+console.log(result.marble); // "--a--b--c--|"
+console.log(result.values); // { a: 1, b: 2, c: 3 }
+```
+
+#### Complex Observable with Transformations
+
+```typescript
+import { testWithCapture } from "svg-marbles";
+import { of, map, delay, mergeMap } from "rxjs";
+
+const result = testWithCapture(({ cold }) => {
+  const source = cold("--a--b--|", { a: 1, b: 2 });
+  return source.pipe(
+    map((x) => x * 2),
+    delay(10)
+  );
+});
+
+console.log(result.marble); // "----A----B--|"
+console.log(result.values); // { A: 2, B: 4 }
+```
+
+#### Hot Observable Capture
+
+```typescript
+import { testWithCapture } from "svg-marbles";
+
+const result = testWithCapture(({ hot }) => {
+  return hot("^--a--b--c--|", { a: "hello", b: "world", c: "!" });
+});
+
+console.log(result.marble); // "^--a--b--c--|"
+console.log(result.values); // { a: 'hello', b: 'world', c: '!' }
+```
+
+#### Error Handling
+
+```typescript
+import { testWithCapture } from "svg-marbles";
+
+const result = testWithCapture(({ cold }) => {
+  return cold("--a--#", { a: 1 }, new Error("Something went wrong"));
+});
+
+console.log(result.marble); // "--a--#"
+console.log(result.values); // { a: 1 }
+```
+
+#### Complex Values and Auto-Assignment
+
+```typescript
+import { testWithCapture } from "svg-marbles";
+
+const result = testWithCapture(({ cold }) => {
+  return cold("--a--b--c--|", {
+    a: { id: 1, name: "Alice" },
+    b: { id: 2, name: "Bob" },
+    c: { id: 3, name: "Charlie" }
+  });
+});
+
+console.log(result.marble); // "--a--b--c--|"
+console.log(result.values);
+// {
+//   a: { id: 1, name: 'Alice' },
+//   b: { id: 2, name: 'Bob' },
+//   c: { id: 3, name: 'Charlie' }
+// }
+```
+
+### Integration with Rendering
+
+You can combine observable capture with SVG rendering to generate diagrams from real observables:
+
+```typescript
+import { testWithCapture, render } from "svg-marbles";
+import { of, map, delay } from "rxjs";
+
+// Capture the observable
+const capture = testWithCapture(({ cold }) => {
+  return cold("--a--b--c--|", { a: 1, b: 2, c: 3 });
+});
+
+// Render the captured marble as SVG
+const svg = render(capture.marble, {
+  theme: {
+    valueColor: "#2196F3",
+    backgroundColor: "#f5f5f5"
+  }
+});
+
+console.log(svg); // SVG markup string
+```
+
+### Advanced Usage with Custom Scheduler
+
+```typescript
+import { captureMarbles } from "svg-marbles";
+import { TestScheduler } from "rxjs/testing";
+
+const scheduler = new TestScheduler((actual, expected) => {
+  // Custom assertion logic
+  expect(actual).toEqual(expected);
+});
+
+const result = captureMarbles(scheduler, ({ cold }) => {
+  return cold("--a--b--|", { a: "x", b: "y" });
+});
+
+console.log(result.marble); // "--a--b--|"
+```
+
 ## Exported Types and Functions
 
 The library also exports additional types and functions for advanced usage:
@@ -306,7 +469,10 @@ import {
   defaultTheme,
   parseMarbleDiagram,
   ParsedMarbleDiagram,
-  MarbleEvent
+  MarbleEvent,
+  testWithCapture,
+  captureMarbles,
+  MarbleCapture
 } from "svg-marbles";
 
 // Use the default theme as a starting point
@@ -314,6 +480,11 @@ const myTheme = { ...defaultTheme, valueColor: "#ff6b9d" };
 
 // Parse marble diagrams programmatically
 const parsed = parseMarbleDiagram("--a--b--c--|", 10);
+
+// Capture observable marbles
+const capture = testWithCapture(({ cold }) =>
+  cold("--a--b--|", { a: 1, b: 2 })
+);
 ```
 
 ## License
