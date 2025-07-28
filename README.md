@@ -11,23 +11,23 @@ npm install svg-marbles
 ## Quick Start
 
 ```typescript
-import { render } from "svg-marbles";
+import { render } from 'svg-marbles';
 
 // Simple marble diagram
-const svg = render("--a--b--c--|");
+const svg = render('--a--b--c--|');
 
 // With custom theme
-const themedSvg = render("--a--b--c--|", {
+const themedSvg = render('--a--b--c--|', {
   theme: {
-    backgroundColor: "#1e1e1e",
-    valueColor: "#61dafb"
+    backgroundColor: '#1e1e1e',
+    valueColor: '#61dafb'
   }
 });
 
 // With named diagram
 const namedSvg = render({
-  name: "My Observable",
-  diagram: "--a--b--c--|",
+  name: 'My Observable',
+  diagram: '--a--b--c--|',
   frameTime: 20
 });
 ```
@@ -72,6 +72,8 @@ interface MarbleToSVGOptions {
 
 The library provides extensive theming capabilities through the `SVGTheme` interface. You can customize colors, sizes, spacing, and visual elements.
 
+**Note**: Horizontal padding is automatically calculated to prevent marble truncation and cannot be overridden by users. Only vertical padding can be customized.
+
 ### Theme Properties
 
 #### Colors
@@ -87,14 +89,14 @@ The library provides extensive theming capabilities through the `SVGTheme` inter
 
 #### Sizing & Spacing
 
-| Property       | Type     | Default | Description                          |
-| -------------- | -------- | ------- | ------------------------------------ |
-| `fontSize`     | `number` | `14`    | Font size in pixels                  |
-| `lineWidth`    | `number` | `2`     | Width of lines in pixels             |
-| `circleRadius` | `number` | `8`     | Radius of value circles in pixels    |
-| `padding`      | `number` | `20`    | Padding around the diagram in pixels |
-| `rowHeight`    | `number` | `60`    | Height of the diagram row in pixels  |
-| `timeScale`    | `number` | `3`     | Scale factor for time representation |
+| Property       | Type     | Default | Description                                                                                                                 |
+| -------------- | -------- | ------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `fontSize`     | `number` | `14`    | Font size in pixels                                                                                                         |
+| `lineWidth`    | `number` | `2`     | Width of lines in pixels                                                                                                    |
+| `circleRadius` | `number` | `8`     | Radius of value circles in pixels                                                                                           |
+| `padding`      | `number` | `25`    | Vertical padding around the diagram in pixels (horizontal padding is calculated automatically to prevent marble truncation) |
+| `rowHeight`    | `number` | `60`    | Height of the diagram row in pixels                                                                                         |
+| `timeScale`    | `number` | `3`     | Scale factor for time representation                                                                                        |
 
 #### Advanced Styling
 
@@ -109,29 +111,29 @@ The library provides extensive theming capabilities through the `SVGTheme` inter
 
 ```typescript
 const darkTheme = {
-  backgroundColor: "#1e1e1e",
-  lineColor: "#404040",
-  valueColor: "#61dafb",
-  errorColor: "#ff6b6b",
-  completeColor: "#4ecdc4",
-  textColor: "#ffffff",
+  backgroundColor: '#1e1e1e',
+  lineColor: '#404040',
+  valueColor: '#61dafb',
+  errorColor: '#ff6b6b',
+  completeColor: '#4ecdc4',
+  textColor: '#ffffff',
   fontSize: 16,
   circleRadius: 10
 };
 
-const svg = render("--a--b--c--|", { theme: darkTheme });
+const svg = render('--a--b--c--|', { theme: darkTheme });
 ```
 
 #### Material Design Theme
 
 ```typescript
 const materialTheme = {
-  backgroundColor: "#fafafa",
-  lineColor: "#e0e0e0",
-  valueColor: "#2196F3",
-  errorColor: "#f44336",
-  completeColor: "#4CAF50",
-  textColor: "#212121",
+  backgroundColor: '#fafafa',
+  lineColor: '#e0e0e0',
+  valueColor: '#2196F3',
+  errorColor: '#f44336',
+  completeColor: '#4CAF50',
+  textColor: '#212121',
   fontSize: 14,
   lineWidth: 1.5,
   circleRadius: 6,
@@ -139,19 +141,19 @@ const materialTheme = {
   rowHeight: 48
 };
 
-const svg = render("--a--b--c--|", { theme: materialTheme });
+const svg = render('--a--b--c--|', { theme: materialTheme });
 ```
 
 #### Minimal Theme
 
 ```typescript
 const minimalTheme = {
-  backgroundColor: "#ffffff",
-  lineColor: "#e1e1e1",
-  valueColor: "#000000",
-  errorColor: "#ff0000",
-  completeColor: "#000000",
-  textColor: "#666666",
+  backgroundColor: '#ffffff',
+  lineColor: '#e1e1e1',
+  valueColor: '#000000',
+  errorColor: '#ff0000',
+  completeColor: '#000000',
+  textColor: '#666666',
   fontSize: 12,
   lineWidth: 1,
   circleRadius: 4,
@@ -160,20 +162,20 @@ const minimalTheme = {
   timeScale: 2
 };
 
-const svg = render("--a--b--c--|", { theme: minimalTheme });
+const svg = render('--a--b--c--|', { theme: minimalTheme });
 ```
 
 #### Custom Circle Styling
 
 ```typescript
 const customCircles = {
-  valueColor: "#ff6b9d",
-  circleStrokeColor: "#ff4757",
+  valueColor: '#ff6b9d',
+  circleStrokeColor: '#ff4757',
   circleStrokeWidth: 3,
   circleRadius: 12
 };
 
-const svg = render("--a--b--c--|", { theme: customCircles });
+const svg = render('--a--b--c--|', { theme: customCircles });
 ```
 
 ## Marble Syntax
@@ -197,16 +199,16 @@ The library supports standard RxJS marble diagram syntax:
 
 ```typescript
 // Simple stream with completion
-render("--a--b--c--|");
+render('--a--b--c--|');
 
 // Stream with error
-render("--a--b--#");
+render('--a--b--#');
 
 // Stream with subscription points
-render("^--a--b--!");
+render('^--a--b--!');
 
 // Multiple values at same time
-render("--(abc)--d--|");
+render('--(abc)--d--|');
 ```
 
 ### Complex Scenarios
@@ -214,28 +216,28 @@ render("--(abc)--d--|");
 ```typescript
 // Multiple observables with names
 const source = render({
-  name: "Source",
-  diagram: "--a--b--c--|",
+  name: 'Source',
+  diagram: '--a--b--c--|',
   frameTime: 20
 });
 
 const mapped = render({
-  name: "Mapped",
-  diagram: "----A----B----C--|",
+  name: 'Mapped',
+  diagram: '----A----B----C--|',
   frameTime: 20
 });
 
 // Error handling
 const errorStream = render(
   {
-    name: "Error Stream",
-    diagram: "--a--#",
+    name: 'Error Stream',
+    diagram: '--a--#',
     frameTime: 15
   },
   {
     theme: {
-      errorColor: "#ff4757",
-      valueColor: "#2ed573"
+      errorColor: '#ff4757',
+      valueColor: '#2ed573'
     }
   }
 );
@@ -246,24 +248,24 @@ const errorStream = render(
 ```typescript
 // Custom theme for different diagram types
 const successTheme = {
-  backgroundColor: "#f8fff9",
-  valueColor: "#00b894",
-  completeColor: "#00b894",
-  lineColor: "#ddd"
+  backgroundColor: '#f8fff9',
+  valueColor: '#00b894',
+  completeColor: '#00b894',
+  lineColor: '#ddd'
 };
 
 const errorTheme = {
-  backgroundColor: "#fff8f8",
-  valueColor: "#e17055",
-  errorColor: "#d63031",
-  lineColor: "#ddd"
+  backgroundColor: '#fff8f8',
+  valueColor: '#e17055',
+  errorColor: '#d63031',
+  lineColor: '#ddd'
 };
 
 // Success stream
-render("--a--b--c--|", { theme: successTheme });
+render('--a--b--c--|', { theme: successTheme });
 
 // Error stream
-render("--a--b--#", { theme: errorTheme });
+render('--a--b--#', { theme: errorTheme });
 ```
 
 ## Advanced Usage
@@ -272,8 +274,8 @@ render("--a--b--#", { theme: errorTheme });
 
 ```typescript
 // Different frame times for different diagrams
-const fastStream = render("--a--b--|", { frameTime: 5 });
-const slowStream = render("--a--b--|", { frameTime: 50 });
+const fastStream = render('--a--b--|', { frameTime: 5 });
+const slowStream = render('--a--b--|', { frameTime: 50 });
 ```
 
 ### Programmatic Theme Generation
@@ -281,18 +283,18 @@ const slowStream = render("--a--b--|", { frameTime: 50 });
 ```typescript
 function createTheme(baseColor: string) {
   return {
-    backgroundColor: "#ffffff",
-    lineColor: "#e0e0e0",
+    backgroundColor: '#ffffff',
+    lineColor: '#e0e0e0',
     valueColor: baseColor,
-    errorColor: "#f44336",
+    errorColor: '#f44336',
     completeColor: baseColor,
-    textColor: "#212121"
+    textColor: '#212121'
   };
 }
 
 // Use different colors for different streams
-const blueStream = render("--a--b--|", { theme: createTheme("#2196F3") });
-const greenStream = render("--a--b--|", { theme: createTheme("#4CAF50") });
+const blueStream = render('--a--b--|', { theme: createTheme('#2196F3') });
+const greenStream = render('--a--b--|', { theme: createTheme('#4CAF50') });
 ```
 
 ## Testing and Observable Capture
@@ -338,12 +340,12 @@ Lower-level function that captures marbles using a provided TestScheduler instan
 #### Basic Observable Capture
 
 ```typescript
-import { testWithCapture } from "svg-marbles";
-import { of, map, delay } from "rxjs";
+import { testWithCapture } from 'svg-marbles';
+import { of, map, delay } from 'rxjs';
 
 // Capture a simple observable
 const result = testWithCapture(({ cold }) => {
-  return cold("--a--b--c--|", { a: 1, b: 2, c: 3 });
+  return cold('--a--b--c--|', { a: 1, b: 2, c: 3 });
 });
 
 console.log(result.marble); // "--a--b--c--|"
@@ -353,11 +355,11 @@ console.log(result.values); // { a: 1, b: 2, c: 3 }
 #### Complex Observable with Transformations
 
 ```typescript
-import { testWithCapture } from "svg-marbles";
-import { of, map, delay, mergeMap } from "rxjs";
+import { testWithCapture } from 'svg-marbles';
+import { of, map, delay, mergeMap } from 'rxjs';
 
 const result = testWithCapture(({ cold }) => {
-  const source = cold("--a--b--|", { a: 1, b: 2 });
+  const source = cold('--a--b--|', { a: 1, b: 2 });
   return source.pipe(
     map((x) => x * 2),
     delay(10)
@@ -371,10 +373,10 @@ console.log(result.values); // { A: 2, B: 4 }
 #### Hot Observable Capture
 
 ```typescript
-import { testWithCapture } from "svg-marbles";
+import { testWithCapture } from 'svg-marbles';
 
 const result = testWithCapture(({ hot }) => {
-  return hot("^--a--b--c--|", { a: "hello", b: "world", c: "!" });
+  return hot('^--a--b--c--|', { a: 'hello', b: 'world', c: '!' });
 });
 
 console.log(result.marble); // "^--a--b--c--|"
@@ -384,10 +386,10 @@ console.log(result.values); // { a: 'hello', b: 'world', c: '!' }
 #### Error Handling
 
 ```typescript
-import { testWithCapture } from "svg-marbles";
+import { testWithCapture } from 'svg-marbles';
 
 const result = testWithCapture(({ cold }) => {
-  return cold("--a--#", { a: 1 }, new Error("Something went wrong"));
+  return cold('--a--#', { a: 1 }, new Error('Something went wrong'));
 });
 
 console.log(result.marble); // "--a--#"
@@ -397,13 +399,13 @@ console.log(result.values); // { a: 1 }
 #### Complex Values and Auto-Assignment
 
 ```typescript
-import { testWithCapture } from "svg-marbles";
+import { testWithCapture } from 'svg-marbles';
 
 const result = testWithCapture(({ cold }) => {
-  return cold("--a--b--c--|", {
-    a: { id: 1, name: "Alice" },
-    b: { id: 2, name: "Bob" },
-    c: { id: 3, name: "Charlie" }
+  return cold('--a--b--c--|', {
+    a: { id: 1, name: 'Alice' },
+    b: { id: 2, name: 'Bob' },
+    c: { id: 3, name: 'Charlie' }
   });
 });
 
@@ -421,19 +423,19 @@ console.log(result.values);
 You can combine observable capture with SVG rendering to generate diagrams from real observables:
 
 ```typescript
-import { testWithCapture, render } from "svg-marbles";
-import { of, map, delay } from "rxjs";
+import { testWithCapture, render } from 'svg-marbles';
+import { of, map, delay } from 'rxjs';
 
 // Capture the observable
 const capture = testWithCapture(({ cold }) => {
-  return cold("--a--b--c--|", { a: 1, b: 2, c: 3 });
+  return cold('--a--b--c--|', { a: 1, b: 2, c: 3 });
 });
 
 // Render the captured marble as SVG
 const svg = render(capture.marble, {
   theme: {
-    valueColor: "#2196F3",
-    backgroundColor: "#f5f5f5"
+    valueColor: '#2196F3',
+    backgroundColor: '#f5f5f5'
   }
 });
 
@@ -443,8 +445,8 @@ console.log(svg); // SVG markup string
 ### Advanced Usage with Custom Scheduler
 
 ```typescript
-import { captureMarbles } from "svg-marbles";
-import { TestScheduler } from "rxjs/testing";
+import { captureMarbles } from 'svg-marbles';
+import { TestScheduler } from 'rxjs/testing';
 
 const scheduler = new TestScheduler((actual, expected) => {
   // Custom assertion logic
@@ -452,7 +454,7 @@ const scheduler = new TestScheduler((actual, expected) => {
 });
 
 const result = captureMarbles(scheduler, ({ cold }) => {
-  return cold("--a--b--|", { a: "x", b: "y" });
+  return cold('--a--b--|', { a: 'x', b: 'y' });
 });
 
 console.log(result.marble); // "--a--b--|"
@@ -463,28 +465,16 @@ console.log(result.marble); // "--a--b--|"
 The library also exports additional types and functions for advanced usage:
 
 ```typescript
-import {
-  render,
-  SVGTheme,
-  defaultTheme,
-  parseMarbleDiagram,
-  ParsedMarbleDiagram,
-  MarbleEvent,
-  testWithCapture,
-  captureMarbles,
-  MarbleCapture
-} from "svg-marbles";
+import { render, SVGTheme, defaultTheme, parseMarbleDiagram, ParsedMarbleDiagram, MarbleEvent, testWithCapture, captureMarbles, MarbleCapture } from 'svg-marbles';
 
 // Use the default theme as a starting point
-const myTheme = { ...defaultTheme, valueColor: "#ff6b9d" };
+const myTheme = { ...defaultTheme, valueColor: '#ff6b9d' };
 
 // Parse marble diagrams programmatically
-const parsed = parseMarbleDiagram("--a--b--c--|", 10);
+const parsed = parseMarbleDiagram('--a--b--c--|', 10);
 
 // Capture observable marbles
-const capture = testWithCapture(({ cold }) =>
-  cold("--a--b--|", { a: 1, b: 2 })
-);
+const capture = testWithCapture(({ cold }) => cold('--a--b--|', { a: 1, b: 2 }));
 ```
 
 ## License

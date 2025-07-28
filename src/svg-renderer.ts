@@ -12,7 +12,7 @@ export interface SVGTheme {
   circleRadius: number;
   circleStrokeColor?: string;
   circleStrokeWidth?: number;
-  padding: number;
+  padding: number; // Vertical padding only - horizontal padding is calculated automatically
   rowHeight: number;
   timeScale: number;
 }
@@ -27,7 +27,7 @@ export const defaultTheme: SVGTheme = {
   fontSize: 14,
   lineWidth: 2,
   circleRadius: 8,
-  padding: 20,
+  padding: 25, // Increased to provide better default spacing
   rowHeight: 60,
   timeScale: 3
 };
@@ -41,20 +41,26 @@ export function renderMarbleDiagramToSVG(diagram: ParsedMarbleDiagram, options: 
   const theme = { ...defaultTheme, ...options.theme };
   const { padding, rowHeight, timeScale, lineWidth, circleRadius, fontSize } = theme;
 
-  const width = diagram.duration * timeScale + padding * 2;
+  // Calculate horizontal padding automatically to prevent marble truncation
+  const strokeWidth = theme.circleStrokeWidth || lineWidth;
+  const maxMarbleRadius = circleRadius + strokeWidth;
+  const textWidth = fontSize * 0.6; // Approximate width of single character
+  const horizontalPadding = maxMarbleRadius + textWidth + 5; // Add 5px buffer for safety
+
+  const width = diagram.duration * timeScale + horizontalPadding * 2;
   const height = rowHeight + padding * 2;
 
   let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">`;
   svg += `<rect width="${width}" height="${height}" fill="${theme.backgroundColor}"/>`;
 
   const y = padding + rowHeight / 2;
-  const startX = padding;
+  const startX = horizontalPadding;
   const endX = startX + diagram.duration * timeScale;
 
   svg += `<line x1="${startX}" y1="${y}" x2="${endX}" y2="${y}" stroke="${theme.lineColor}" stroke-width="${lineWidth}"/>`;
 
   if (options.name) {
-    svg += `<text x="${padding}" y="${padding - 5}" font-family="Arial, sans-serif" font-size="${fontSize}" fill="${theme.textColor}">${options.name}</text>`;
+    svg += `<text x="${horizontalPadding}" y="${padding - 5}" font-family="Arial, sans-serif" font-size="${fontSize}" fill="${theme.textColor}">${options.name}</text>`;
   }
 
   diagram.events.forEach((event) => {
