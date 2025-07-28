@@ -477,6 +477,102 @@ const parsed = parseMarbleDiagram('--a--b--c--|', 10);
 const capture = testWithCapture(({ cold }) => cold('--a--b--|', { a: 1, b: 2 }));
 ```
 
+## Examples
+
+### Cloudflare Workers Example
+
+The library includes a complete Cloudflare Workers example that demonstrates basic RxJS operations with marble diagram generation.
+
+#### Features Demonstrated
+
+- **Real-time marble diagram generation** from RxJS observables
+- **Basic RxJS operators** like `map`, `filter`, `delay`, and `merge`
+- **Custom theming** with dark mode and transparent backgrounds
+- **Web deployment** using Cloudflare Workers and Hono
+- **Educational visualization** of common reactive patterns
+
+#### Getting Started
+
+```bash
+# From the project root
+cd examples/cloudflare
+bun install
+bun dev
+```
+
+**Note**: This example uses the parent library directly via `file:../../` dependency, so any changes to the main library will be immediately reflected in the example.
+
+#### What It Shows
+
+The example demonstrates fundamental RxJS operations with clear visual feedback:
+
+1. **Input Stream**: Simple sequence `[1, 2, 3, 4]`
+2. **Transformations**: Map (×2), filter (even numbers), delay (2 frames)
+3. **Combination**: Merging two streams with different timing
+4. **Error Handling**: Visualizing error scenarios
+
+#### Key Implementation Details
+
+```typescript
+// Map operation: multiply each value by 2
+const mappedStream = testWithCapture(({ cold }) => cold('a--b--c--d--|', { a: 1, b: 2, c: 3, d: 4 }).pipe(map((x) => x * 2)));
+
+// Filter operation: only even numbers
+const filteredStream = testWithCapture(({ cold }) => cold('a--b--c--d--|', { a: 1, b: 2, c: 3, d: 4 }).pipe(filter((x) => x % 2 === 0)));
+
+// Merge operation: combine two streams
+const mergedStream = testWithCapture(({ cold }) => merge(cold('a--b--|', { a: 1, b: 2 }), cold('--c--d--|', { c: 3, d: 4 })));
+
+// Custom dark theme for web display
+const darkTheme: Partial<SVGTheme> = {
+  backgroundColor: 'transparent',
+  lineColor: '#fff',
+  valueColor: '#ff5722',
+  textColor: '#fff',
+  circleStrokeColor: '#fff',
+  circleStrokeWidth: 3,
+  circleRadius: 18,
+  padding: 4
+};
+```
+
+#### Technologies Used
+
+- **Cloudflare Workers** for serverless deployment
+- **Hono** for web framework
+- **RxJS** for reactive programming
+- **Tailwind CSS** for styling
+- **Bun** for fast development
+
+This example is perfect for learning RxJS concepts and understanding how marble diagrams represent observable streams.
+
+## Development
+
+### Working with Examples
+
+The examples in this repository are configured to use the parent library directly, making them perfect for development and testing:
+
+```bash
+# Build the main library
+npm run build
+
+# Run the Cloudflare example
+cd examples/cloudflare
+bun install
+bun dev
+```
+
+Any changes to the main library will be immediately reflected in the examples after rebuilding.
+
+### Adding New Examples
+
+To add a new example:
+
+1. Create a new directory in `examples/`
+2. Set up your project with `"svg-marbles": "file:../../"` in package.json
+3. Import and use the library as normal
+4. Document the example in this README
+
 ## License
 
 MIT
