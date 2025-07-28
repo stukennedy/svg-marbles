@@ -2,6 +2,10 @@
 
 A library for rendering RxJS marble diagrams as SVG with comprehensive theming support.
 
+![RxJS Marble Diagrams Example](screenshot.png)
+
+_Example showing RxJS operations with value mapping - displaying actual values instead of just letters_
+
 ## Installation
 
 ```bash
@@ -65,6 +69,7 @@ interface MarbleDiagram {
 interface MarbleToSVGOptions {
   theme?: Partial<SVGTheme>; // Custom theme
   frameTime?: number; // Frame time in ms
+  values?: Record<string, any>; // Mapping of marble characters to actual values
 }
 ```
 
@@ -178,9 +183,47 @@ const customCircles = {
 const svg = render('--a--b--c--|', { theme: customCircles });
 ```
 
-## Marble Syntax
+## Value Mapping
 
-The library supports standard RxJS marble diagram syntax:
+The library supports mapping marble characters to actual values, allowing you to display meaningful content instead of just letters.
+
+### Basic Value Mapping
+
+```typescript
+// Map marble characters to actual values
+const svg = render('--a--b--c--|', {
+  values: { a: 1, b: 2, c: 3 }
+});
+```
+
+### With testWithCapture
+
+When using `testWithCapture`, the values are automatically generated:
+
+```typescript
+const result = testWithCapture(({ cold }) => cold('--a--b--c--|', { a: 1, b: 2, c: 3 }).pipe(map((x) => x * 2)));
+
+// result.marble contains the marble string
+// result.values contains the mapping: { a: 2, b: 4, c: 6 }
+
+const svg = render(result.marble, { values: result.values });
+```
+
+### Complex Values
+
+You can map to any type of value:
+
+```typescript
+const svg = render('--a--b--c--|', {
+  values: {
+    a: { id: 1, name: 'Alice' },
+    b: { id: 2, name: 'Bob' },
+    c: { id: 3, name: 'Charlie' }
+  }
+});
+```
+
+## Marble Syntax
 
 | Symbol              | Description          | Example                                           |
 | ------------------- | -------------------- | ------------------------------------------------- | ------ | ---------------------------- |
@@ -199,33 +242,43 @@ The library supports standard RxJS marble diagram syntax:
 
 ```typescript
 // Simple stream with completion
-render('--a--b--c--|');
+render('--a--b--c--|', { values: { a: 1, b: 2, c: 3 } });
 
 // Stream with error
-render('--a--b--#');
+render('--a--b--#', { values: { a: 1, b: 2 } });
 
 // Stream with subscription points
-render('^--a--b--!');
+render('^--a--b--!', { values: { a: 1, b: 2 } });
 
 // Multiple values at same time
-render('--(abc)--d--|');
+render('--(abc)--d--|', { values: { a: 1, b: 2, c: 3, d: 4 } });
 ```
 
 ### Complex Scenarios
 
 ```typescript
 // Multiple observables with names
-const source = render({
-  name: 'Source',
-  diagram: '--a--b--c--|',
-  frameTime: 20
-});
+const source = render(
+  {
+    name: 'Source',
+    diagram: '--a--b--c--|',
+    frameTime: 20
+  },
+  {
+    values: { a: 1, b: 2, c: 3 }
+  }
+);
 
-const mapped = render({
-  name: 'Mapped',
-  diagram: '----A----B----C--|',
-  frameTime: 20
-});
+const mapped = render(
+  {
+    name: 'Mapped',
+    diagram: '----A----B----C--|',
+    frameTime: 20
+  },
+  {
+    values: { A: 2, B: 4, C: 6 }
+  }
+);
 
 // Error handling
 const errorStream = render(
@@ -238,7 +291,8 @@ const errorStream = render(
     theme: {
       errorColor: '#ff4757',
       valueColor: '#2ed573'
-    }
+    },
+    values: { a: 1 }
   }
 );
 ```
@@ -350,6 +404,9 @@ const result = testWithCapture(({ cold }) => {
 
 console.log(result.marble); // "--a--b--c--|"
 console.log(result.values); // { a: 1, b: 2, c: 3 }
+
+// Render with the captured values
+const svg = render(result.marble, { values: result.values });
 ```
 
 #### Complex Observable with Transformations
@@ -368,6 +425,9 @@ const result = testWithCapture(({ cold }) => {
 
 console.log(result.marble); // "----A----B--|"
 console.log(result.values); // { A: 2, B: 4 }
+
+// Render with the captured values
+const svg = render(result.marble, { values: result.values });
 ```
 
 #### Hot Observable Capture
@@ -381,6 +441,9 @@ const result = testWithCapture(({ hot }) => {
 
 console.log(result.marble); // "^--a--b--c--|"
 console.log(result.values); // { a: 'hello', b: 'world', c: '!' }
+
+// Render with the captured values
+const svg = render(result.marble, { values: result.values });
 ```
 
 #### Error Handling
@@ -394,6 +457,9 @@ const result = testWithCapture(({ cold }) => {
 
 console.log(result.marble); // "--a--#"
 console.log(result.values); // { a: 1 }
+
+// Render with the captured values
+const svg = render(result.marble, { values: result.values });
 ```
 
 #### Complex Values and Auto-Assignment
@@ -431,12 +497,13 @@ const capture = testWithCapture(({ cold }) => {
   return cold('--a--b--c--|', { a: 1, b: 2, c: 3 });
 });
 
-// Render the captured marble as SVG
+// Render the captured marble as SVG with values
 const svg = render(capture.marble, {
   theme: {
     valueColor: '#2196F3',
     backgroundColor: '#f5f5f5'
-  }
+  },
+  values: capture.values
 });
 
 console.log(svg); // SVG markup string
@@ -475,6 +542,9 @@ const parsed = parseMarbleDiagram('--a--b--c--|', 10);
 
 // Capture observable marbles
 const capture = testWithCapture(({ cold }) => cold('--a--b--|', { a: 1, b: 2 }));
+
+// Render with value mapping
+const svg = render('--a--b--|', { values: { a: 1, b: 2 } });
 ```
 
 ## Examples

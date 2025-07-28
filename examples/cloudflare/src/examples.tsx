@@ -22,6 +22,10 @@ export const onRequestGet = (c: Context) => {
   // Map operation: multiply each value by 2
   const mappedStream = testWithCapture(({ cold }) => cold(inputStream, { a: 1, b: 2, c: 3, d: 4 }).pipe(map((x) => x * 2)));
 
+  // Debug: Log the captured values
+  console.log('Mapped stream marble:', mappedStream.marble);
+  console.log('Mapped stream values:', mappedStream.values);
+
   // Filter operation: only even numbers
   const filteredStream = testWithCapture(({ cold }) => cold(inputStream, { a: 1, b: 2, c: 3, d: 4 }).pipe(filter((x) => x % 2 === 0)));
 
@@ -49,7 +53,7 @@ export const onRequestGet = (c: Context) => {
               <h2 class="text-white font-bold text-xl mb-2">Input Stream</h2>
               <div class="flex flex-col">
                 <span class="text-white">Original: [1, 2, 3, 4]</span>
-                <MarbleSVG diagram={inputStream} theme={darkTheme} color="#00bcd4" />
+                <MarbleSVG diagram={inputStream} theme={darkTheme} color="#00bcd4" values={{ a: 1, b: 2, c: 3, d: 4 }} />
               </div>
             </div>
 
@@ -57,15 +61,15 @@ export const onRequestGet = (c: Context) => {
               <h2 class="text-white font-bold text-xl mb-2">Transformations</h2>
               <div class="flex flex-col">
                 <span class="text-white">Map (×2): [2, 4, 6, 8]</span>
-                <MarbleSVG diagram={mappedStream.marble} theme={darkTheme} color="#66bb6a" />
+                <MarbleSVG diagram={mappedStream.marble} theme={darkTheme} color="#66bb6a" values={mappedStream.values} />
               </div>
               <div class="flex flex-col">
                 <span class="text-white">Filter (even only): [2, 4]</span>
-                <MarbleSVG diagram={filteredStream.marble} theme={darkTheme} color="#9c27b0" />
+                <MarbleSVG diagram={filteredStream.marble} theme={darkTheme} color="#9c27b0" values={filteredStream.values} />
               </div>
               <div class="flex flex-col">
                 <span class="text-white">Delay (2 frames)</span>
-                <MarbleSVG diagram={delayedStream.marble} theme={darkTheme} color="#ff9800" />
+                <MarbleSVG diagram={delayedStream.marble} theme={darkTheme} color="#ff9800" values={delayedStream.values} />
               </div>
             </div>
 
@@ -73,15 +77,15 @@ export const onRequestGet = (c: Context) => {
               <h2 class="text-white font-bold text-xl mb-2">Combination</h2>
               <div class="flex flex-col">
                 <span class="text-white">Stream 1: [1, 2]</span>
-                <MarbleSVG diagram={stream1} theme={darkTheme} color="#e91e63" />
+                <MarbleSVG diagram={stream1} theme={darkTheme} color="#e91e63" values={{ a: 1, b: 2 }} />
               </div>
               <div class="flex flex-col">
                 <span class="text-white">Stream 2: [3, 4]</span>
-                <MarbleSVG diagram={stream2} theme={darkTheme} color="#3f51b5" />
+                <MarbleSVG diagram={stream2} theme={darkTheme} color="#3f51b5" values={{ c: 3, d: 4 }} />
               </div>
               <div class="flex flex-col">
                 <span class="text-white">Merged: [1, 3, 2, 4]</span>
-                <MarbleSVG diagram={mergedStream.marble} theme={darkTheme} color="#00bcd4" />
+                <MarbleSVG diagram={mergedStream.marble} theme={darkTheme} color="#00bcd4" values={mergedStream.values} />
               </div>
             </div>
 
@@ -89,7 +93,7 @@ export const onRequestGet = (c: Context) => {
               <h2 class="text-white font-bold text-xl mb-2">Error Handling</h2>
               <div class="flex flex-col">
                 <span class="text-white">Error Stream</span>
-                <MarbleSVG diagram={errorStream.marble} theme={darkTheme} color="#f44336" />
+                <MarbleSVG diagram={errorStream.marble} theme={darkTheme} color="#f44336" values={errorStream.values} />
               </div>
             </div>
           </div>

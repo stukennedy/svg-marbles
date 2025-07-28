@@ -95,19 +95,9 @@ function messagesToMarbles(messages: any[]): MarbleCapture {
       let char = valueToChar.get(valueStr);
 
       if (!char) {
-        // If the value is already a single letter/digit, use it directly
-        if (typeof value === 'string' && value.length === 1 && /^[a-zA-Z0-9]$/.test(value)) {
-          char = value;
-          // If this char is already used for a different value, find a new one
-          if (usedChars.has(char) && !valueToChar.has(valueStr)) {
-            char = getNextAvailableChar(alphabet, charIndex, usedChars);
-            charIndex++;
-          }
-        } else {
-          // For non-single-char values, assign a letter
-          char = getNextAvailableChar(alphabet, charIndex, usedChars);
-          charIndex++;
-        }
+        // Always assign a new character for each unique value
+        char = getNextAvailableChar(alphabet, charIndex, usedChars);
+        charIndex++;
 
         valueToChar.set(valueStr, char);
         usedChars.add(char);

@@ -10,6 +10,7 @@ export interface MarbleDiagram {
 export interface MarbleToSVGOptions {
   theme?: Partial<SVGTheme>;
   frameTime?: number;
+  values?: Record<string, any>; // Mapping of marble characters to actual values
 }
 
 export function render(diagram: string | MarbleDiagram, options: MarbleToSVGOptions = {}): string {
@@ -30,7 +31,8 @@ export function render(diagram: string | MarbleDiagram, options: MarbleToSVGOpti
 
   return renderMarbleDiagramToSVG(parsed, {
     theme: options.theme,
-    name
+    name,
+    values: options.values
   });
 }
 

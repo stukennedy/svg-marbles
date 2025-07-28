@@ -35,11 +35,13 @@ export const defaultTheme: SVGTheme = {
 export interface RenderOptions {
   theme?: Partial<SVGTheme>;
   name?: string;
+  values?: Record<string, any>; // Mapping of marble characters to actual values
 }
 
 export function renderMarbleDiagramToSVG(diagram: ParsedMarbleDiagram, options: RenderOptions = {}): string {
   const theme = { ...defaultTheme, ...options.theme };
   const { padding, rowHeight, timeScale, lineWidth, circleRadius, fontSize } = theme;
+  const { values } = options;
 
   // Calculate horizontal padding automatically to prevent marble truncation
   const strokeWidth = theme.circleStrokeWidth || lineWidth;
@@ -72,7 +74,9 @@ export function renderMarbleDiagramToSVG(diagram: ParsedMarbleDiagram, options: 
         const strokeWidth = theme.circleStrokeWidth || lineWidth;
         svg += `<circle cx="${x}" cy="${y}" r="${circleRadius}" fill="${theme.valueColor}" stroke="${strokeColor}" stroke-width="${strokeWidth}" />`;
         if (event.value) {
-          svg += `<text x="${x}" y="${y + 5}" text-anchor="middle" font-family="Arial, sans-serif" font-size="${fontSize}" fill="${theme.textColor}">${event.value}</text>`;
+          // Use the actual value from the mapping if available, otherwise use the marble character
+          const displayValue = values && values[event.value] !== undefined ? values[event.value] : event.value;
+          svg += `<text x="${x}" y="${y + 5}" text-anchor="middle" font-family="Arial, sans-serif" font-size="${fontSize}" fill="${theme.textColor}">${displayValue}</text>`;
         }
         break;
 
